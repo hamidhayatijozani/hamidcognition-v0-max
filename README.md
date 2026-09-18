@@ -1,34 +1,18 @@
-# HamidCognition V0 Max 🧠⚡️
+# HamidCognition V0 Max
 
-> **Repository status:** Historical V0-Max implementation lineage.
->
-> The current canonical research and provenance record is **[HamidCognition-Unified](https://github.com/hamidhayatijozani/HamidCognition-Unified)**. This repository remains preserved so its architecture, code and chronology can be inspected and cited as historical evidence.
+> Historical V0-Max implementation lineage.
 
-## جایگاه این نسخه
+The canonical integrated project is **HamidCognition-Unified**. This repository remains available for inspection of its architecture, code, and chronology.
 
-این نسخه یک مرحلهٔ تاریخی از توسعهٔ HamidCognition است و نباید صرفاً از روی نام `V0 Max` به‌عنوان نسخهٔ نهایی یا production-ready تلقی شود. برای هر ادعای فنی، artifact و commit مربوطه باید مشخص شود و در صورت نیاز مستقل بازاجرا گردد.
+## Components
 
-## اجزای ثبت‌شده
+- Core P/S/T engine.
+- Mobile AI experiments.
+- Dashboard implementation.
+- Creative-generation experiments.
 
-- Core Engine: تحلیل P/S/T با ساختار غیرخطی
-- Mobile AI: آموزش روی دستگاه با Kotlin + TensorFlow Lite
-- Dashboard: داشبورد زنده
-- Creative Generator: آزمایش تولید خلاق
+## Evidence boundary
 
-## برای اجرا
+"V0 Max" is a historical version label. It does not by itself establish finality, correctness, or production readiness.
 
-در صورت وجود فایل‌های لازم در همین نسخه:
-
-```bash
-cd backend
-pip install -r requirements.txt
-python app.py
-```
-
-## Citation
-
-برای استناد تاریخی، `hamidcognition-v0-max` و commit/path دقیق را ذکر کنید. برای وضعیت فعلی پژوهش و provenance از `HamidCognition-Unified` استفاده کنید.
-
-**Canonical research record:** https://github.com/hamidhayatijozani/HamidCognition-Unified
-
-**Originator:** Hamid Hayati Jozani
+The relevant source artifacts have been integrated into `HamidCognition-Unified/integrated/` where practical.
