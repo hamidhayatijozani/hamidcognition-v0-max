@@ -1,5 +1,5 @@
 # api/server.py
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify
 import hashlib
 import json
 import os
@@ -74,7 +74,7 @@ def _build_prediction_artifact() -> ObservableDecisionArtifact:
             text=f"Model prediction is {predicted_price}.",
             claim_type=ClaimType.PREDICTION,
             source="GradientBoostingRegressor",
-            evidence_refs=[],
+            evidence_refs=["model:prediction_run"],
             confidence=confidence,
         ),
     ]
@@ -92,6 +92,12 @@ def _build_prediction_artifact() -> ObservableDecisionArtifact:
             "P": cog_state.get("P"),
             "S": cog_state.get("S"),
             "T": cog_state.get("T"),
+        },
+        {
+            "id": "model:prediction_run",
+            "kind": "model_execution",
+            "source": "GradientBoostingRegressor",
+            "prediction": predicted_price,
         },
     ]
 
