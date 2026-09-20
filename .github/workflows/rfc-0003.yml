@@ -36,3 +36,5 @@ jobs:
         run: python -m compileall -q governance api core main.py
       - name: Run full test suite
         run: pytest tests/ -v
+
+# Full repository test gate; keep this workflow coupled to the API boundary.
