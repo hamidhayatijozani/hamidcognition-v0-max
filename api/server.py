@@ -1,10 +1,10 @@
 # api/server.py
+from datetime import datetime
 from flask import Flask, render_template, jsonify
 import hashlib
 import json
 import os
 import sys
-import time
 
 # Add repository root to sys.path.
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -33,10 +33,15 @@ def _build_prediction_artifact() -> ObservableDecisionArtifact:
     if not prediction:
         raise RuntimeError("prediction_not_ready")
 
+    prediction_timestamp = prediction.get("timestamp")
+    if not prediction_timestamp:
+        raise RuntimeError("prediction_timestamp_missing")
+
+    artifact_timestamp = datetime.fromisoformat(prediction_timestamp).timestamp()
     cog_state = prediction.get("cog_state") or {}
     trace_source = json.dumps(
         {
-            "timestamp": prediction.get("timestamp"),
+            "timestamp": prediction_timestamp,
             "predicted_price": prediction.get("predicted_price"),
             "current_price": prediction.get("current_price"),
             "phase": prediction.get("phase"),
@@ -104,7 +109,7 @@ def _build_prediction_artifact() -> ObservableDecisionArtifact:
     return ObservableDecisionArtifact(
         trace_id=trace_id,
         agent_id="hamidcognition-v0-max",
-        timestamp=time.time(),
+        timestamp=artifact_timestamp,
         pst_state={
             "P": float(cog_state.get("P", 0.0)),
             "S": float(cog_state.get("S", 0.0)),
