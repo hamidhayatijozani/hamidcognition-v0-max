@@ -28,6 +28,14 @@ app = Flask(
 governance_engine = GovernanceEngine()
 
 
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "service": "hamidcognition-v0-max",
+    })
+
+
 def _build_prediction_artifact() -> ObservableDecisionArtifact:
     prediction = system.last_prediction
     if not prediction:
