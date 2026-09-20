@@ -67,5 +67,13 @@ def test_lineage_token_changes_when_decision_changes():
     assert first.lineage_token != changed.lineage_token
 
 
+def test_same_artifact_produces_same_lineage_token():
+    engine = GovernanceEngine()
+    fixed = artifact()
+    first = engine.evaluate(fixed)
+    second = engine.evaluate(fixed)
+    assert first.to_dict() == second.to_dict()
+
+
 def test_prediction_claim_type_is_distinct():
     assert ClaimType.PREDICTION.value != ClaimType.EXPLANATION.value
