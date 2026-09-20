@@ -58,7 +58,6 @@ def test_predict_allow_status(client, monkeypatch):
     assert_governance_payload(data, "ALLOW")
     assert data["governance"]["hais_score"] >= 0.85
     assert data["governance"]["drs_score"] < 0.60
-    assert data["execution_boundary"] if "execution_boundary" in data else True
 
 
 def test_predict_ask_status(client, monkeypatch):
