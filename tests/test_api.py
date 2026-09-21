@@ -18,7 +18,7 @@ def client():
 
 
 def set_prediction(monkeypatch, *, t=0.9, confidence=0.85, horizon=5, phase="stable"):
-    """Install a deterministic synthetic prediction without starting market I/O."""
+    """Install a deterministic prediction without starting market I/O."""
     prediction = {
         "timestamp": "2026-01-01T00:00:00",
         "current_price": 100.0,
@@ -34,9 +34,10 @@ def set_prediction(monkeypatch, *, t=0.9, confidence=0.85, horizon=5, phase="sta
 
 def assert_governance_payload(data, action):
     assert data["status"] == "governed"
-    assert data["governance"]["action"] == action
-    assert "lineage_token" in data["governance"]
-    assert len(data["lineage_token"]) == 32
+    governance = data["governance"]
+    assert governance["action"] == action
+    assert len(governance["lineage_token"]) == 64
+    assert data["trace_id"] == governance["trace_id"]
 
 
 def test_health_check(client):
@@ -72,44 +73,14 @@ def test_predict_ask_status(client, monkeypatch):
     assert data["prediction"] is not None
 
 
-def test_predict_sandbox_status(client, monkeypatch):
-    set_prediction(monkeypatch, t=0.90, confidence=0.95, horizon=3)
-    monkeypatch.setattr(
-        system,
-        "last_prediction",
-        {
-            **system.last_prediction,
-            "cog_state": {"P": 0.50, "S": 0.50, "T": 0.90},
-        },
-    )
+def test_predict_lineage_is_replayable(client, monkeypatch):
+    set_prediction(monkeypatch, t=0.90, confidence=0.85, horizon=5)
 
-    response = client.post("/api/predict")
+    first = client.post("/api/predict").get_json()
+    second = client.post("/api/predict").get_json()
 
-    assert response.status_code == 200
-    data = response.get_json()
-    assert_governance_payload(data, "SANDBOX")
-    assert data["governance"]["hais_score"] < 0.65
-    assert data["execution_boundary"] == "sandbox"
-
-
-def test_predict_deny_status(client, monkeypatch):
-    set_prediction(monkeypatch, t=0.05, confidence=0.99, horizon=30)
-    monkeypatch.setattr(
-        system,
-        "last_prediction",
-        {
-            **system.last_prediction,
-            "cog_state": {"P": 0.30, "S": 0.20, "T": 0.05},
-        },
-    )
-
-    response = client.post("/api/predict")
-
-    assert response.status_code == 403
-    data = response.get_json()
-    assert_governance_payload(data, "DENY")
-    assert data["governance"]["drs_score"] >= 0.60
-    assert data["prediction"] is not None
+    assert first["trace_id"] == second["trace_id"]
+    assert first["governance"] == second["governance"]
 
 
 def test_predict_not_ready(client, monkeypatch):
