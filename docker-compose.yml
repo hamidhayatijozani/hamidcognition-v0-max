@@ -1,0 +1,20 @@
+services:
+  hamidcognition-governance-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hamidcognition_governance_service
+    ports:
+      - "5000:5000"
+    environment:
+      FLASK_ENV: production
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
